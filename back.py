@@ -82,6 +82,7 @@ class Cell:
 class Snake:
     size = 2
     alive = True
+    history = []
 
     def __init__(self, body, direction):
         self.body = body
@@ -92,6 +93,8 @@ class Snake:
 
     def move(self, head):
         self.body = [head] + self.body
+        self.history += [self.direction]
+
         if head.have_fruit():
             head.consume_fruit()
             head.slither_on()
@@ -153,15 +156,18 @@ class Game:
     def play(self):
         while self.snake.is_alive():
             yield self.next()
-            # print(self)
         print(
-            f"Our fellow Snake friend died at the age of {self.count}. What a pitty..."
+            f"\n> Our fellow Snake friend died at the age of {self.count}. What a pitty..."
         )
 
     # -------------- CONTROLLER --------------------
 
     def get_state(self):
-        res = {"snake": [b.pos for b in self.snake.body], "fruit": self.fruit.pos}
+        res = {
+            "snake": [b.pos for b in self.snake.body],
+            "fruit": self.fruit.pos,
+            "moves": self.snake.history,
+        }
         self.snake
 
     # -------------- CORE --------------------
