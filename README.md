@@ -38,7 +38,7 @@ First expected release the friday **15th november 2020**
 ## :clipboard: Tasks
 
 1. Grid
-    - [ ] Pop up Fruits
+    - [x] Pop up Fruits
 
 1. Snake interface 
     - [ ] Move  
@@ -47,6 +47,8 @@ First expected release the friday **15th november 2020**
  
 1. Rules 
     - [ ] Snake dies when touching it's tail
+    - [ ] Biting his tail cuts him in two
+    - [ ] Can plant a fruit for later by loosing it's tail 
 
 1. AI 
     - [ ] Implement a Neural Network
@@ -57,4 +59,5 @@ First expected release the friday **15th november 2020**
  
 1. Display
     - [ ] Basic console output
+        - [ ] Wind
     - [ ] Graphical interface
