@@ -32,15 +32,16 @@ class Board:
             for j in range(self.size):
                 self.grid[(i, j)] = Cell(i, j)
 
+    def place_fruit(self, i, j):
+        if self.grid[(i, j)].is_empty():
+            return self.grid[(i, j)].land_fruit()
+        else:
+            return self.drop_fruit()
+
     def drop_fruit(self):
         i = random.randint(0, self.size - 1)
         j = random.randint(0, self.size - 1)
-
-        if self.grid[(i, j)].is_empty():
-            self.grid[(i, j)].land_fruit()
-            return self.grid[(i, j)]
-        else:
-            return self.drop_fruit()
+        return self.place_fruit(i, j)
 
 
 class Cell:
@@ -67,6 +68,7 @@ class Cell:
     def land_fruit(self):
         self.fruit = not self.fruit
         self.empty = not self.empty
+        return self.pos
 
     def consume_fruit(self):
         self.fruit = not self.fruit
@@ -130,8 +132,14 @@ class Game:
 
     def start(self):
         self.count = 0
-        self.fruit = self.board.drop_fruit()
+        self.air_drop_fruit()
         self.hatch_from_egg()
+
+    def air_drop_fruit(self, i=None, j=None):
+        if i and j:
+            self.fruit = self.board.place_fruit(i, j)
+        else:
+            self.fruit = self.board.drop_fruit()
 
     def hatch_from_egg(self):
         center = self.board.size // 2
