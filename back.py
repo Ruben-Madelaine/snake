@@ -38,8 +38,9 @@ class Board:
 
         if self.grid[(i, j)].is_empty():
             self.grid[(i, j)].land_fruit()
+            return self.grid[(i, j)]
         else:
-            self.drop_fruit()
+            return self.drop_fruit()
 
 
 class Cell:
@@ -93,6 +94,7 @@ class Snake:
             head.consume_fruit()
             head.slither_on()
             self.size += 1
+            return "ate the fruit"
         else:
             tail = self.body.pop()
             self.slither([head, tail])
@@ -128,7 +130,7 @@ class Game:
 
     def start(self):
         self.count = 0
-        self.board.drop_fruit()
+        self.fruit = self.board.drop_fruit()
         self.hatch_from_egg()
 
     def hatch_from_egg(self):
@@ -143,10 +145,19 @@ class Game:
     def play(self):
         while self.snake.is_alive():
             self.next()
-            print(self)
+            # print(self)
         print(
             f"Our fellow Snake friend died at the age of {self.count}. What a pitty..."
         )
+
+    # -------------- CONTROLLER --------------------
+
+    def get_state(self):
+        res = {
+            "snake": [b.pos for b in self.snake.body],
+            "fruit": self.fruit.pos 
+        }
+        self.snake
 
     # -------------- CORE --------------------
 
@@ -157,7 +168,10 @@ class Game:
         next_pos = self.snake.next_pos()
         cell = self.get_cell(next_pos)
         if cell:
-            self.snake.move(cell)
+            ate_a_fruit = self.snake.move(cell)
+            if ate_a_fruit:
+                self.fruit = self.board.drop_fruit()
+                print("Air dropping a new fruit in 3...2..1..")
         else:
             print("End of game!")
 
@@ -199,6 +213,7 @@ def main():
     g.start()
     print(g)
     g.play()
+    print(g)
 
 
 if __name__ == "__main__":
