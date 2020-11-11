@@ -144,7 +144,7 @@ class Game:
 
     def play(self):
         while self.snake.is_alive():
-            self.next()
+            yield self.next()
             # print(self)
         print(
             f"Our fellow Snake friend died at the age of {self.count}. What a pitty..."
@@ -153,10 +153,7 @@ class Game:
     # -------------- CONTROLLER --------------------
 
     def get_state(self):
-        res = {
-            "snake": [b.pos for b in self.snake.body],
-            "fruit": self.fruit.pos 
-        }
+        res = {"snake": [b.pos for b in self.snake.body], "fruit": self.fruit.pos}
         self.snake
 
     # -------------- CORE --------------------
@@ -171,7 +168,7 @@ class Game:
             ate_a_fruit = self.snake.move(cell)
             if ate_a_fruit:
                 self.fruit = self.board.drop_fruit()
-                print("Air dropping a new fruit in 3...2..1..")
+                print("Air dropping a new fruit in 3...2..1.. *BOOM*")
         else:
             print("End of game!")
 
