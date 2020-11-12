@@ -1,4 +1,4 @@
-import back
+import back.back as back
 
 
 def main():
@@ -6,9 +6,10 @@ def main():
     g.start()
     print(g)
 
-    for _ in g.play():
-        print(g)
-        state = g.get_state()
+    g.play()
+
+    print(g)
+    state = g.get_state()
 
 
 if __name__ == "__main__":

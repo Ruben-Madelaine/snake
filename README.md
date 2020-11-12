@@ -41,23 +41,35 @@ First expected release the friday **15th november 2020**
     - [x] Pop up Fruits
 
 1. Snake interface 
-    - [ ] Move  
-    - [ ] Eat 
-    - [ ] Grow 
+    - [x] Move  
+    - [x] Eat 
+    - [x] Grow 
  
 1. Rules 
-    - [ ] Snake dies when touching it's tail
+    - [x] Snake dies when touching it's tail
     - [ ] Biting his tail cuts him in two
     - [ ] Can plant a fruit for later by loosing it's tail 
 
+1. Player
+    - [ ] Allow Human to play
+    - [ ] Allow AI
+        - [x] Random
+        - [ ] Linear vision 
+        - [ ] T shape vision
+        - [ ] Cone shape vision
+        - [ ] 360 vision
+
 1. AI 
     - [ ] Implement a Neural Network
+        - [ ] Input the cells
+        - [ ] Output the directions
     - [ ] Allow training 
+    - [ ] Implement a NN manually
+    - [ ] Use a librairy (Pytorch or Tensorflow)
     - [ ] Save Neural Network configuration and load it 
     - [ ] Show statistics
-    - [ ] Allow Human to play
  
 1. Display
-    - [ ] Basic console output
-        - [ ] Wind
+    - [x] Basic console output
+    - [ ] Animate Wind
     - [ ] Graphical interface
