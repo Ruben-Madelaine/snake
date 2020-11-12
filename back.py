@@ -90,12 +90,20 @@ class Snake:
     alive = True
     history = []
 
-    def __init__(self, body, direction):
+    def __init__(self, brain, body, direction):
+        self.brain = brain
         self.body = body
         self.direction = direction
 
+        for b in self.body:
+            b.slither_in()
+
     def is_alive(self):
         return self.alive
+
+    def think(self):
+        potential_dir = self.brain.think()
+        self.change_dir(potential_dir)
 
     def move(self, head):
         self.body = [head] + self.body
@@ -118,14 +126,33 @@ class Snake:
         return tuple(p1 + p2 for p1, p2 in zip(pos1, pos2))
 
     def change_dir(self, dir):
-        if dir != tuple(p * (-1) for p in self.direction):
+        if dir and dir != tuple(p * (-1) for p in self.direction):
             self.direction = dir
         else:
-            print("Trying to turn around but failed!")
+            logger("Trying to turn around but failed!")
 
     def die(self):
         self.alive = False
 
+    def clone(self):
+        clone = Snake(self.brain, self.body, self.direction)
+        return clone
+
+class RandomAI:
+    def think(self):
+        if random.random() > 0.5:
+            choice = random.choice(list(DIRECTIONS.keys()))
+            txt = [f"Huum.. Let's go {choice}", f"What about goint {choice} ?"]
+            potential_dir = DIRECTIONS[choice]
+            logger(random.choice(txt))
+            return potential_dir
+        else:
+            txt = [
+                "Not in the mood for thinking...",
+                "Let's keep going!",
+                "I shouldn't think too much about it...",
+            ]
+            logger(random.choice(txt))
 
 class Game:
     def __init__(self, size):
@@ -153,16 +180,19 @@ class Game:
         tail = self.board.grid[center, center - 1]
         body = [head, tail]
 
-        self.snake = Snake(body, DIRECTIONS[RIGHT])
-        for b in body:
-            b.slither_in()
+        self.snake = Snake(RandomAI(), body, DIRECTIONS[RIGHT])
 
     def play(self):
         while self.snake.is_alive():
             yield self.next()
-        print(
+        logger(
             f"\n> Our fellow Snake friend died at the age of {self.count}. What a pitty..."
         )
+
+    # -------------- SET --------------------
+
+    def hard_start(self, i, j):
+        pass
 
     # -------------- CONTROLLER --------------------
 
@@ -179,16 +209,16 @@ class Game:
     def next(self):
         self.count += 1
 
-        self.snake_think()
+        self.snake.think()
         next_pos = self.snake.next_pos()
         cell = self.get_cell(next_pos)
         if cell:
             ate_a_fruit = self.snake.move(cell)
             if ate_a_fruit:
                 self.fruit = self.board.drop_fruit()
-                print("Air dropping a new fruit in 3...2..1.. *BOOM*")
+                logger("Air dropping a new fruit in 3...2..1.. *BOOM*")
         else:
-            print("End of game!")
+            logger("End of game!")
 
     def get_cell(self, next_pos):
         if self.is_available(next_pos):
@@ -202,25 +232,34 @@ class Game:
         i, j = next_pos
         return (0 <= i < self.board.size) and (0 <= j < self.board.size)
 
-    # -------------- AI --------------------
+    # -------------- POPULATION --------------------
 
-    def snake_think(self):
-        self.random_brain()
+class Population:
 
-    def random_brain(self):
-        if random.random() > 0.5:
-            choice = random.choice(list(DIRECTIONS.keys()))
-            txt = [f"Huum.. Let's go {choice}", f"What about goint {choice} ?"]
-            potential_dir = DIRECTIONS[choice]
-            print(random.choice(txt))
-            self.snake.change_dir(potential_dir)
-        else:
-            txt = [
-                "Not in the mood for thinking...",
-                "Let's keep going!",
-                "I shouldn't think too much about it...",
-            ]
-            print(random.choice(txt))
+    def __init__(size):
+        self.size = size
+
+    def breed(self, snake):
+        self.snakes = [snake.clone() for _ in range(self.size)]
+
+    # live
+    def live(self):
+        pass
+    # next gen
+        # get best and breed
+
+
+    # copy snake N times
+    # isolate each snake in its world
+    # go for the fruit !
+    # success or fail:
+    #  - Ate the fruit
+    #  - Died
+
+
+def logger(txt):
+    if __name__ == "__main__":
+        print(txt)
 
 
 def main():
