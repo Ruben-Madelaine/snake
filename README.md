@@ -41,19 +41,19 @@ First expected release the friday **15th november 2020**
     - [x] Pop up Fruits
 
 1. Snake interface 
-    - [ ] Move  
-    - [ ] Eat 
-    - [ ] Grow 
+    - [x] Move  
+    - [x] Eat 
+    - [x] Grow 
  
 1. Rules 
-    - [ ] Snake dies when touching it's tail
+    - [x] Snake dies when touching it's tail
     - [ ] Biting his tail cuts him in two
     - [ ] Can plant a fruit for later by loosing it's tail 
 
 1. Player
     - [ ] Allow Human to play
     - [ ] Allow AI
-        - [ ] Random
+        - [x] Random
         - [ ] Linear vision 
         - [ ] T shape vision
         - [ ] Cone shape vision
@@ -70,6 +70,6 @@ First expected release the friday **15th november 2020**
     - [ ] Show statistics
  
 1. Display
-    - [ ] Basic console output
-        - [ ] Wind
+    - [x] Basic console output
+    - [ ] Animate Wind
     - [ ] Graphical interface
