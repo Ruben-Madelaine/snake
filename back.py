@@ -68,7 +68,7 @@ class Cell:
     def land_fruit(self):
         self.fruit = not self.fruit
         self.empty = not self.empty
-        return self.pos
+        return self
 
     def consume_fruit(self):
         self.fruit = not self.fruit
@@ -165,10 +165,10 @@ class Game:
     def get_state(self):
         res = {
             "snake": [b.pos for b in self.snake.body],
-            "fruit": self.fruit.pos,
+            "fruit": self.fruit.pos if self.fruit else None,
             "moves": self.snake.history,
         }
-        self.snake
+        return res
 
     # -------------- CORE --------------------
 
@@ -223,8 +223,13 @@ def main():
     g = Game(10)
     g.start()
     print(g)
-    g.play()
+    
+    for _ in g.play():
+        pass
+
     print(g)
+    state = g.get_state()
+    print(state)
 
 
 if __name__ == "__main__":
