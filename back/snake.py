@@ -10,11 +10,12 @@ DIRECTIONS = {UP: (-1, 0), DOWN: (1, 0), LEFT: (0, -1), RIGHT: (0, 1)}
 
 
 class Snake:
-    size = 2
-    alive = True
-    history = []
 
     def __init__(self, brain, body, direction):
+        self.size = 2
+        self.alive = True
+        self.history = []
+
         self.brain = brain
         self.body = body
         self.direction = direction
@@ -58,11 +59,6 @@ class Snake:
     def die(self):
         self.alive = False
 
-    def clone(self):
-        clone = Snake(self.brain, self.body, self.direction)
-        return clone
-
-
 class RandomAI:
     def think(self):
         if random.random() > 0.5:
@@ -78,6 +74,9 @@ class RandomAI:
                 "I shouldn't think too much about it...",
             ]
             logger(random.choice(txt))
+
+    def clone(self):
+        return RandomAI()
 
 
 def logger(txt):

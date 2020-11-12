@@ -2,10 +2,8 @@ import random
 
 
 class Board:
-    grid = {}
-    size = 0
-
     def __init__(self, size):
+        self.grid = {}
         self.size = size
         self.create()
 
@@ -37,12 +35,12 @@ class Board:
 
 
 class Cell:
-    empty = True
-    fruit = False
-    occupants = 0
-
     def __init__(self, i, j):
         self.pos = i, j
+
+        self.empty = True
+        self.fruit = False
+        self.occupants = 0
 
     def __str__(self):
         herb = '"' if self.empty else ""
@@ -83,6 +81,10 @@ def main():
     board = Board(size=10)
     board.drop_fruit()
     print(board)
+
+    board2 = Board(size=10)
+    board2.drop_fruit()
+    print(board2)
 
 
 if __name__ == "__main__":

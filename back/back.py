@@ -4,7 +4,8 @@ import snake
 
 class Game:
     def __init__(self, size):
-        self.board = board.Board(size)
+        self.board = Board(size)
+        self.count = 0
 
     def __str__(self):
         return str(self.board)
@@ -12,7 +13,6 @@ class Game:
     # -------------- INIT --------------------
 
     def start(self):
-        self.count = 0
         self.air_drop_fruit()
         self.hatch_from_egg()
 
