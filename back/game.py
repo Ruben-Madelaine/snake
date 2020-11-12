@@ -20,9 +20,9 @@ class Game:
 
     # -------------- INIT --------------------
 
-    def start(self):
+    def start(self, brain=snake.RandomAI()):
         self.air_drop_fruit()
-        self.hatch_from_egg()
+        self.hatch_from_egg(brain)
 
     def air_drop_fruit(self, i=None, j=None):
         if i and j:
@@ -30,13 +30,13 @@ class Game:
         else:
             self.fruit = self.board.drop_fruit()
 
-    def hatch_from_egg(self):
+    def hatch_from_egg(self, brain):
         center = self.board.size // 2
         head = self.board.grid[center, center]
         tail = self.board.grid[center, center - 1]
         body = [head, tail]
 
-        self.snake = snake.Snake(snake.RandomAI(), body, snake.DIRECTIONS[snake.RIGHT])
+        self.snake = snake.Snake(brain, body, snake.DIRECTIONS[snake.RIGHT])
 
     def play(self):
         while self.snake.is_alive() and self.count < MAX_ITER:

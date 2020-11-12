@@ -58,6 +58,7 @@ First expected release the friday **15th november 2020**
         - [ ] T shape vision
         - [ ] Cone shape vision
         - [ ] 360 vision
+    - [ ] Allow game replay
 
 1. AI 
     - [ ] Implement a Neural Network

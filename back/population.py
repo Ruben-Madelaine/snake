@@ -70,8 +70,6 @@ def test_population():
     for i,b in enumerate(gen_best_scores):
         print(f"Gen #{i}:", b)
 
-    # p.get_best().replay()
-
 
 def main():
     test_population()
