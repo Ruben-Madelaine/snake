@@ -47,7 +47,7 @@ class Board:
 class Cell:
     empty = True
     fruit = False
-    occupied = False
+    occupants = 0
 
     def __init__(self, i, j):
         self.pos = i, j
@@ -55,7 +55,7 @@ class Cell:
     def __str__(self):
         herb = '"' if self.empty else ""
         fruit = "@" if self.fruit else ""
-        snake = "o" if self.occupied else ""
+        snake = "o" if self.occupants else ""
 
         return snake or fruit or herb
 
@@ -74,10 +74,16 @@ class Cell:
         self.fruit = not self.fruit
         self.empty = not self.empty
 
-    def slither_on(self):
-        self.occupied = not self.occupied
-        self.empty = not self.empty
+    def slither_in(self):
+        self.occupants += 1
 
+        if self.occupants: 
+            self.empty = False
+
+    def slither_out(self):
+        self.occupants -= 1
+        if not self.occupants: 
+            self.empty = True
 
 class Snake:
     size = 2
@@ -97,16 +103,13 @@ class Snake:
 
         if head.have_fruit():
             head.consume_fruit()
-            head.slither_on()
+            head.slither_in()
             self.size += 1
             return "ate the fruit"
         else:
+            head.slither_in()
             tail = self.body.pop()
-            self.slither([head, tail])
-
-    def slither(self, cells):
-        for cell in cells:
-            cell.slither_on()
+            tail.slither_out()
 
     def next_pos(self):
         return self.add_pos(self.body[0].pos, self.direction)
@@ -151,7 +154,8 @@ class Game:
         body = [head, tail]
 
         self.snake = Snake(body, DIRECTIONS[RIGHT])
-        self.snake.slither(body)
+        for b in body:
+            b.slither_in()
 
     def play(self):
         while self.snake.is_alive():
