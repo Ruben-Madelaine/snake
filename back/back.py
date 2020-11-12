@@ -1,5 +1,13 @@
-import board
-import snake
+
+try:
+    from board import Board
+    import snake
+except ModuleNotFoundError:
+    from back.board import Board
+    import back.snake as snake
+
+
+MAX_ITER = 100
 
 
 class Game:
@@ -31,18 +39,14 @@ class Game:
         self.snake = snake.Snake(snake.RandomAI(), body, snake.DIRECTIONS[snake.RIGHT])
 
     def play(self):
-        while self.snake.is_alive():
-            yield self.next()
+        while self.snake.is_alive() and self.count < MAX_ITER:
+            self.next()
         logger(
             f"\n> Our fellow Snake friend died at the age of {self.count}. What a pitty..."
         )
+        print(self)
 
     def replay(self):
-        pass
-
-    # -------------- SET --------------------
-
-    def hard_start(self, i, j):
         pass
 
     # -------------- CONTROLLER --------------------
