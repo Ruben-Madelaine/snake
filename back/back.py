@@ -41,10 +41,9 @@ class Game:
     def play(self):
         while self.snake.is_alive() and self.count < MAX_ITER:
             self.next()
-        logger(
-            f"\n> Our fellow Snake friend died at the age of {self.count}. What a pitty..."
-        )
-        print(self)
+        # logger(
+        #     f"> Our fellow Snake friend died at the age of {self.count}. What a pitty..."
+        # )
 
     def replay(self):
         pass
@@ -72,8 +71,6 @@ class Game:
             if ate_a_fruit:
                 self.fruit = self.board.drop_fruit()
                 logger("Air dropping a new fruit in 3...2..1.. *BOOM*")
-        else:
-            logger("End of game!")
 
     def get_cell(self, next_pos):
         if self.is_available(next_pos):
@@ -90,62 +87,98 @@ class Game:
     # -------------- POPULATION --------------------
 
 class Population:
-
     def __init__(self, size, game_size):
         self.size = size
         self.game_size = game_size
         self.start()
 
-    # TODO useful ?
     def start(self):
-        self.pop = [Game(10) for _ in range(self.size)]
-
-    def breed(self, snake):
-        self.snakes = [snake.clone() for _ in range(self.size)]
+        self.population = [Game(self.game_size) for _ in range(self.size)]
+        for game in self.population:
+            game.start()
 
     def live(self):
-        pass
-    # next gen
-        # get best and breed
+        for game in self.population:
+            game.play()
 
+    def get_gen_results(self):
+        gen_results = {}
+        for game in self.population:
+            snake_size = game.snake.size
+            snake_age = game.count
+            gen_results[game] = (snake_size, snake_age)
 
-    # copy snake N times
-    # isolate each snake in its world
-    # go for the fruit !
-    # success or fail:
-    #  - Ate the fruit
-    #  - Died
+        return gen_results
+
+    def get_sorted_gen_results(self):
+        results = self.get_gen_results()
+        sorted_res = sorted(results.values(), reverse=True)
+        return sorted_res
+
+    def get_best(self):
+        results = self.get_gen_results()
+        best_res = sorted(results.values(), reverse=True)[0]
+        print(best_res)
+        best = [g for g,res in results.items() if res == best_res]
+        return best[0]
+
+    def nex_gen(self):
+        best_snake = self.get_best().snake
+
+        new_population = []
+        for _ in range(self.size):
+            game = Game(self.game_size)
+            game.start()
+
+            game.snake.brain = best_snake.brain.clone()
+            new_population += [game]
+
+        self.population = new_population
 
 
 def logger(txt):
     if __name__ == "__main__":
         print(txt)
-        
+
 
 def test_game():
-    g = Game(10)
+    g = Game(5)
     g.start()
     print(g)
-    
-    for _ in g.play():
-        pass
 
+    g2 = Game(10)
+    g2.start()
+    print(g2)
     print(g)
+
+    g.play()
+
+    print(g2)
+
     state = g.get_state()
     print(state)
 
 def test_population():
-    p = Population(10, 10)
-    p.live()
+    generation = 10
+    population = 10
+    world_size = 10
+    p = Population(population, world_size)
 
-    # p.start()
-    # for _ in g.play():
+    gen_best_scores = []
+    for gen in range(generation):
+        p.live()
+        best = p.get_sorted_gen_results()
+        gen_best_scores += [best]
+        p.nex_gen()
+
+    for b in gen_best_scores:
+        print(b)
 
     # p.get_best().replay()
 
 def main():
-    test_game()
-    # test_population()
+    # test_game()
+    test_population()
 
 
 if __name__ == "__main__":

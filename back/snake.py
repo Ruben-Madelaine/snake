@@ -80,5 +80,5 @@ class RandomAI:
 
 
 def logger(txt):
-    # if __name__ == "__main__":
-    print(txt)
+    if __name__ == "__main__":
+        print(txt)
