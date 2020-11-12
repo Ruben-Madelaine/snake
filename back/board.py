@@ -1,4 +1,4 @@
-import random 
+import random
 
 
 class Board:
@@ -67,14 +67,13 @@ class Cell:
     def slither_in(self):
         self.occupants += 1
 
-        if self.occupants: 
+        if self.occupants:
             self.empty = False
 
     def slither_out(self):
         self.occupants -= 1
-        if not self.occupants: 
+        if not self.occupants:
             self.empty = True
-
 
 
 def main():

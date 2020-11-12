@@ -10,7 +10,6 @@ DIRECTIONS = {UP: (-1, 0), DOWN: (1, 0), LEFT: (0, -1), RIGHT: (0, 1)}
 
 
 class Snake:
-
     def __init__(self, brain, body, direction):
         self.size = 2
         self.alive = True
@@ -58,6 +57,7 @@ class Snake:
 
     def die(self):
         self.alive = False
+
 
 class RandomAI:
     def think(self):
