@@ -62,7 +62,7 @@ class Game:
     def next(self):
         self.count += 1
 
-        self.snake.think()
+        self.snake.think(self.board.grid)
         next_pos = self.snake.next_pos()
         cell = self.get_cell(next_pos)
         if cell:
@@ -106,9 +106,17 @@ def test_game():
     state = g.get_state()
     print(state)
 
+def test_ai():
+    g = Game(10)
+    g.start(snake.AI)
+    print(g)
+
+    g.play()
+    print(g)
 
 def main():
-    test_game()
+    # test_game()
+    test_ai()
 
 
 if __name__ == "__main__":

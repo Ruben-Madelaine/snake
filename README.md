@@ -70,7 +70,16 @@ First expected release the friday **15th november 2020**
     - [ ] Use a librairy (Pytorch or Tensorflow)
     - [ ] Save Neural Network configuration and load it 
     - [ ] Show statistics
+    - [ ] Train on short 
  
+1. Population
+    - [x] Load population
+    - [x] Run games
+    - [x] Get best game
+    - [ ] Clone best snake (or the N bests)
+    - [ ] Mutate clones randomly
+    - [ ] Save best configuration 
+
 1. Display
     - [x] Basic console output
     - [ ] Animate Wind
