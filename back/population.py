@@ -1,20 +1,22 @@
-
 try:
     from game import Game
+    from snake import RandomAI
 except ModuleNotFoundError:
     from back.game import Game
+    from back.snake import RandomAI
 
 
 class Population:
-    def __init__(self, size, game_size):
+    def __init__(self, size, game_size, brain_type):
         self.size = size
         self.game_size = game_size
+        self.brain_type = brain_type
         self.start()
 
     def start(self):
         self.population = [Game(self.game_size) for _ in range(self.size)]
         for game in self.population:
-            game.start()
+            game.start(self.brain_type)
 
     def live(self):
         for game in self.population:
@@ -46,10 +48,12 @@ class Population:
         new_population = []
         for _ in range(self.size):
             game = Game(self.game_size)
-            game.start()
+            game.start(self.brain_type)
 
             game.snake.brain = best_snake.brain.clone()
             new_population += [game]
+
+            # TODO improve !!!!
 
         self.population = new_population
 
@@ -58,7 +62,10 @@ def test_population():
     generation = 10
     population = 10
     world_size = 10
-    p = Population(population, world_size)
+    brain_type = RandomAI
+    # test another brain
+
+    p = Population(population, world_size, brain_type)
 
     gen_best_scores = []
     for gen in range(generation):
@@ -67,7 +74,7 @@ def test_population():
         gen_best_scores += [best]
         p.nex_gen()
 
-    for i,b in enumerate(gen_best_scores):
+    for i, b in enumerate(gen_best_scores):
         print(f"Gen #{i}:", b)
 
 

@@ -1,10 +1,9 @@
-
 try:
-    from board import Board
     import snake
+    from board import Board
 except ModuleNotFoundError:
-    from back.board import Board
     import back.snake as snake
+    from back.board import Board
 
 
 MAX_ITER = 100
@@ -20,7 +19,7 @@ class Game:
 
     # -------------- INIT --------------------
 
-    def start(self, brain=snake.RandomAI()):
+    def start(self, brain=snake.RandomAI):
         self.air_drop_fruit()
         self.hatch_from_egg(brain)
 
@@ -36,7 +35,7 @@ class Game:
         tail = self.board.grid[center, center - 1]
         body = [head, tail]
 
-        self.snake = snake.Snake(brain, body, snake.DIRECTIONS[snake.RIGHT])
+        self.snake = snake.Snake(brain(), body, snake.DIRECTIONS[snake.RIGHT])
 
     def play(self):
         while self.snake.is_alive() and self.count < MAX_ITER:
@@ -98,14 +97,15 @@ def test_game():
     g2 = Game(10)
     g2.start()
     print(g2)
-    print(g)
 
     g.play()
 
+    print(g)
     print(g2)
 
     state = g.get_state()
     print(state)
+
 
 def main():
     test_game()

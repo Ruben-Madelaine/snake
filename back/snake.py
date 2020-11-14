@@ -60,7 +60,7 @@ class Snake:
 
 
 class RandomAI:
-    def think(self):
+    def think(self, *args, **kwargs):
         if random.random() > 0.5:
             choice = random.choice(list(DIRECTIONS.keys()))
             txt = [f"Huum.. Let's go {choice}", f"What about goint {choice} ?"]
