@@ -1,4 +1,10 @@
 import random
+import network
+
+try:
+    import network
+except ImportError:
+    from . import network
 
 
 UP = "UP"
@@ -8,7 +14,8 @@ RIGHT = "RIGHT"
 
 DIRECTIONS = {UP: (-1, 0), DOWN: (1, 0), LEFT: (0, -1), RIGHT: (0, 1)}
 
-NEIGHBORS_POS = [(0,1), (0,-1), (1,0), (-1,0)]
+VISION = [(0,1), (0,-1), (1,0), (-1,0)]
+VISION_DIAG = [(0,1), (0,-1), (1,0), (-1,0), (1,1), (-1,-1), (-1,1), (1,-1)]
 
 
 class Snake:
@@ -79,39 +86,50 @@ class RandomAI:
         return RandomAI()
 
 
-
 class AI:
     def __init__(self):
-        self.nn = None
+        self.vision = VISION
+
+        inputs = len(self.vision)
+        choices = len(DIRECTIONS)
+        neurones = 4
+        layers = 2
+        self.nn = network.Network(inputs, neurones, choices, layers)
     
     def think(self, body, surroundings):
         head = body[0]
-        neighbors = self.gather_data(head, surroundings)
-        conclusions = self.analyze(neighbors)
+        neighbors = self.get_neighbors(head, surroundings)
+        conclusions = self.analyse(neighbors)
         new_direction = self.propose_new_direction(conclusions)
         return new_direction
 
-    def gather_data(self, head, surroundings):
-        pos = head.pos
-        neighbors = self.get_neighbors(pos, surroundings)
-        return neighbors
-
-    def get_neighbors(self, pos, surroundings):
+    def get_neighbors(self, head, surroundings):
         neighbors = []
-        for n_pos in NEIGHBORS_POS:
-            n = add_pos(pos, n_pos)
+        for cell_pos in self.vision:
+            n = add_pos(head.pos, cell_pos)
             try:
                 cell = surroundings[n]
                 neighbors += [cell]
             except KeyError:
-                continue
+                "cell is out of range"
+                neighbors += [None]
         return neighbors
 
-    def analyze(self, neighbors):
+    def analyse(self, neighbors):
         # feed neighbors trough the NN
+        data = self.gather_data(neighbors)
+        print(data)
+        res = self.nn.analyse(data)
+        print(res)
         # and get the resultiong analysis
-        conclusions = {d:random.random() for d in DIRECTIONS}
+        conclusions = {d:r for d,r in zip(DIRECTIONS, res)}
         return conclusions
+
+    def gather_data(self, neighbors):
+        data = []
+        for n in neighbors:
+            data += [n.empty, n.fruit, n.occupants] if n else [-1, -1, -1]
+        return data
 
     def propose_new_direction(self, conclusions):
         # based on results, process it to define new dir

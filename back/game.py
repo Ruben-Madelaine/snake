@@ -1,3 +1,5 @@
+import snake
+from board import Board
 try:
     import snake
     from board import Board

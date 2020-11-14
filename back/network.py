@@ -1,7 +1,9 @@
+import matrix
+
 try:
     import matrix
 except ImportError:
-    from back import matrix
+    from . import matrix
 
 
 VERBOSE = __name__ == "__main__"
