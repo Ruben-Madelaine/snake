@@ -4,7 +4,7 @@ Implementing the well known Snake game with a bit of `A.I.` :robot: flavor !
 
 ## :tada: Examples
 
-To be added
+![snake](img/snake.gif)
 
 ## :spiral_calendar: Dates
 
