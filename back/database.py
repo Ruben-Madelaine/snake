@@ -56,13 +56,15 @@ def get_all(con):
 
 def create_networks_table(con):
     # sql_create_networks_table = """
-    #     DROP TABLE networks;
+    #     ALTER TABLE networks
+    #     ADD COLUMN generation_id integer;
     # """
     # with con:
     #     con.execute(sql_create_networks_table)
     sql_create_networks_table = """
         CREATE TABLE IF NOT EXISTS networks (
-            id INTEGER PRIMARY KEY AUTOINCREMENT, score real, 
+            id INTEGER PRIMARY KEY AUTOINCREMENT, score real,
+            generation_id integer, duration TEXT,
             input_nodes integer, hidden_nodes integer, 
             output_nodes integer, hidden_layers integer, 
             wheights_info Text, Timestamp DATETIME DEFAULT CURRENT_TIMESTAMP);
@@ -74,9 +76,9 @@ def create_networks_table(con):
 def insert_networks_rows(con, rows):
     sql_insert_networks = """
         INSERT INTO networks 
-            (score, input_nodes, hidden_nodes, output_nodes, hidden_layers, wheights_info) 
+            (score, generation_id, duration, input_nodes, hidden_nodes, output_nodes, hidden_layers, wheights_info) 
         VALUES
-            (?, ?, ?, ?, ?, ?);
+            (?, ?, ?, ?, ?, ?, ?, ?);
     """
     with con:
         try:
@@ -89,7 +91,8 @@ def insert_networks_rows(con, rows):
 
 def get_all_networks(con):
     sql_select_all = """
-        SELECT id, score, 
+        SELECT id, score,
+        generation_id, duration,
         input_nodes, hidden_nodes, 
         output_nodes, hidden_layers, 
         Timestamp
