@@ -29,6 +29,21 @@ class Network:
 
     # -------------------------------------------------
 
+    def get_infos(self):
+        infos = [
+            self.input_nodes,
+            self.hidden_nodes,
+            self.output_nodes,
+            self.hidden_layers,
+        ]
+        weights = "\n".join(
+            [f"{w.nb_row}, {w.nb_col}: {w.to_array()}" for w in self.weights]
+        )
+
+        return *infos, weights
+
+    # -------------------------------------------------
+
     def create_weights(self):
         self.weights = []
         for i in range(self.hidden_layers + 1):
@@ -43,6 +58,9 @@ class Network:
     def get_layer_name(self, layer_id):
         name = "Input" if (layer_id == 0) else "Hidden"
         return name if (layer_id != self.hidden_layers) else "Output"
+
+    def load_weights(self, weights):
+        pass
 
     # -------------------------------------------------
 
@@ -192,3 +210,5 @@ if __name__ == "__main__":
     verbose_print(f"{tab}----- output -----\n")
     input_array = [i for i in range(4)]
     nn.analyse(input_array)
+
+    print(nn.get_infos())

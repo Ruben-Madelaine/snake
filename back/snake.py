@@ -15,7 +15,38 @@ RIGHT = "RIGHT"
 DIRECTIONS = {UP: (-1, 0), DOWN: (1, 0), LEFT: (0, -1), RIGHT: (0, 1)}
 
 VISION = [(0, 1), (0, -1), (1, 0), (-1, 0)]
-VISION_DIAG = [(0, 1), (0, -1), (1, 0), (-1, 0), (1, 1), (-1, -1), (-1, 1), (1, -1)]
+val = 1
+VISION_DIAG = [
+    (x, y)
+    for x in range(-val, val + 1)
+    for y in range(-val, val + 1)
+    if not (x == y == 0)
+]
+
+val = 2
+VISION_2_BLOCKS = [
+    (x, y)
+    for x in range(-val, val + 1)
+    for y in range(-val, val + 1)
+    if not (x == y == 0)
+]
+
+val = 1
+cross_size = 10
+VISION_CROSS = sum(
+    [
+        [(dir, c), (c, dir)]
+        for c in range(cross_size)
+        for dir in range(-val, val + 1)
+        if not (c == dir == 0)
+    ],
+    [],
+)
+
+VISION_GRAND_DIAG = sum(
+    [[(c, c), (-c, -c), (c, -c), (-c, c)] for c in range(cross_size) if c != 0], []
+)
+VISION_360 = VISION_CROSS + VISION_GRAND_DIAG
 
 
 class Snake:
@@ -87,7 +118,7 @@ class RandomAI:
 
 class AI:
     def __init__(self, nn=None):
-        self.vision = VISION
+        self.vision = VISION_360
 
         if not nn:
             inputs = len(self.vision) * 3  # amount of cell visible * data accessible
@@ -154,6 +185,7 @@ class AI:
     def crossover(self, parent):
         nn = self.nn.crossover(parent.nn)
         return AI(nn)
+
 
 def add_pos(pos1, pos2):
     return tuple(p1 + p2 for p1, p2 in zip(pos1, pos2))
