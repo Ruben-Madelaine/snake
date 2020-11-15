@@ -1,3 +1,5 @@
+import time
+
 import snake
 from board import Board
 
@@ -9,7 +11,12 @@ except ModuleNotFoundError:
     from back.board import Board
 
 
-STARVING_THRESHOLD = 100
+STARVING_THRESHOLD = 200
+
+
+import os
+clear = lambda: os.system('clear')
+
 
 
 class Game:
@@ -41,12 +48,19 @@ class Game:
 
         self.snake = snake.Snake(brain(), body, snake.DIRECTIONS[snake.RIGHT])
 
-    def play(self):
+    def play(self, verbose=False):
         while self.snake.is_alive() and self.starving < STARVING_THRESHOLD:
             self.next()
-        # logger(
-        #     f"> Our fellow Snake friend died at the age of {self.count}. What a pitty..."
-        # )
+            if verbose:
+                print(self)
+                time.sleep(.1)
+                # clear()
+
+
+        if verbose:
+            print(
+                f"> Our fellow Snake friend died at the age of {self.count}. What a pitty..."
+            )
 
     def replay(self):
         pass
