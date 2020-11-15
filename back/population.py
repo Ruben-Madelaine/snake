@@ -1,5 +1,8 @@
 import random
 
+import time
+import datetime
+
 import snake
 import matrix
 import network
@@ -112,7 +115,6 @@ def score(res):
 
 # ----------------------- Tests ---------------------------
 
-
 def test_population(generation, population_size, world_size):
     # brain_type = snake.RandomAI
     brain_type = snake.AI
@@ -123,15 +125,24 @@ def test_population(generation, population_size, world_size):
 def run_generations(p, generation):
     stats = []
     networks = []
+    t0_batch = time.time()
     for gen in range(generation):
+        t0 = time.time()
         p.live()
         p.evaluate_gen()
         p.natural_selection()
+        t1 = time.time()
 
         if (gen % 10) == 0:
+            t1_batch = time.time()
+            total = str(datetime.timedelta(seconds=(t1 - t0)))
+            total_batch = str(datetime.timedelta(seconds=(t1_batch - t0_batch)))
+
             print(f"Gen #{gen}:", p.best_res, p.best_score)
+            print("Total Batch time:", total_batch, "\tTotal time:", total)
             stats += [(*p.best_res, p.best_score)]
-            networks += [(p.best_score, *p.best_game.snake.brain.nn.get_infos())]
+            networks += [(p.best_score, gen, total, *p.best_game.snake.brain.nn.get_infos())]
+            t0_batch = time.time()
 
     print(f"Overall Results #{p.best_gen}:", p.best_overall_res, p.best_overall_score)
 
@@ -150,7 +161,7 @@ def populate_db(db_connection, list):
     db.create_table(db_connection)
 
     # convert list elements to tuple
-    details = "AI, Diagonal vision, Best Net, New score mode" # Best Net Trained
+    details = "AI, 360 vision, Best Net, New score mode" # Best Net Trained
     rows = [tuple([*elm, details]) for elm in list]
 
     db.insert_rows(db_connection, rows)
@@ -291,19 +302,17 @@ def load_best_ai_and_train(generation, population_size, world_size, get_network)
 
 
 def main():
-    import time
     # test_population()
 
     world_size = 20
-    generation = 800
+    generation = 100
     population_size = 100
-    mutation_rate = 0.1
+    mutation_rate = 0.2
 
     get_network = [db.get_best_network, db.get_latest_network][1]
 
-    train_new_ai(generation, population_size, world_size)
-    # load_best_ai_and_train(generation, population_size, world_size, get_network)
-    # time.sleep(3)
+    # train_new_ai(generation, population_size, world_size)
+    load_best_ai_and_train(generation, population_size, world_size, get_network)
 
     play_one_game_with_best_ai(get_network)
 
