@@ -54,7 +54,7 @@ class Game:
             if verbose:
                 print(self)
                 time.sleep(.1)
-                # clear()
+                clear()
 
 
         if verbose:

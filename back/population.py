@@ -270,9 +270,9 @@ def play_one_game_with_best_ai(get_network):
 
     g = Game(world_size)
     g.start(brain_type)
-    print(g)
     g.snake.brain.nn = best_network
     g.play(verbose=True)
+    print(g)
     
 
 def load_best_ai_and_train(generation, population_size, world_size, get_network):
@@ -305,7 +305,7 @@ def main():
     # test_population()
 
     world_size = 20
-    generation = 100
+    generation = 1000
     population_size = 100
     mutation_rate = 0.2
 
@@ -315,6 +315,8 @@ def main():
     load_best_ai_and_train(generation, population_size, world_size, get_network)
 
     play_one_game_with_best_ai(get_network)
+    # for _ in range(10):
+    #     play_one_game_with_best_ai(get_network)
 
 
 if __name__ == "__main__":
