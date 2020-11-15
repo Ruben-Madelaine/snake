@@ -54,33 +54,36 @@ First expected release the friday **15th november 2020**
 
 1. Player
     - [ ] Allow Human to play
-    - [ ] Allow AI
+    - [x] Allow AI
         - [x] Random
+        - [x] Myopic vision (Adjacent cells)
         - [ ] Linear vision 
         - [ ] T shape vision
         - [ ] Cone shape vision
-        - [ ] 360 vision
+        - [ ] 360 linear vision
+        - [ ] Loose points based on cause of death
+        - [ ] Learn from human games 
     - [ ] Allow game replay
 
 1. AI 
-    - [ ] Implement a Neural Network
-        - [ ] Input the cells
-        - [ ] Output the directions
-    - [ ] Allow training 
-    - [ ] Implement a NN manually
-    - [ ] Use a librairy (Pytorch or Tensorflow)
-    - [ ] Save Neural Network configuration and load it 
-    - [ ] Show statistics
+    - [x] Implement a Neural Network
+        - [x] Input the cells
+        - [x] Output the directions
+    - [x] Allow training 
+    - [x] Implement a NN manually
+    - [x] Save Neural Network configuration and load it 
+    - [x] Show statistics
     - [ ] Train to win in short periods
-    - [ ] Use Pytorch
+    - [ ] Use a librairy (Pytorch or Tensorflow)
+        - [ ] Use Pytorch
  
 1. Population
     - [x] Load population
     - [x] Run games
     - [x] Get best game
-    - [ ] Clone best snake (or the N bests)
-    - [ ] Mutate clones randomly
-    - [ ] Save best configuration 
+    - [x] Clone best snake (or the N bests)
+    - [x] Mutate clones randomly
+    - [x] Save best configuration 
 
 1. Display
     - [x] Basic console output
