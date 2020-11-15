@@ -44,6 +44,9 @@ class Network:
         name = "Input" if (layer_id == 0) else "Hidden"
         return name if (layer_id != self.hidden_layers) else "Output"
 
+    def load_weights(self, weights):
+        pass
+
     # -------------------------------------------------
 
     def analyse(self, input_array):

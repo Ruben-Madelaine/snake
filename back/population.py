@@ -1,7 +1,7 @@
-
 import random
 
 import snake
+import database as db
 from game import Game
 
 try:
@@ -66,7 +66,7 @@ class Population:
     def natural_selection(self):
         self.evaluate_gen()
 
-        new_gen = [self.clone(self.best_snake)] # Best snake makes it to next gen
+        new_gen = [self.clone(self.best_snake)]  # Best snake makes it to next gen
 
         for i in range(1, self.size):
             mother = self.get_a_parent()
@@ -82,7 +82,9 @@ class Population:
         #   get a parent from last gen
         #       best / with fitness > (rand?) threshold / randomly ?
         minimum_score = self.best_score
-        minimum_score -= minimum_score*random.random() # THIS might be a big source of variation in evolution 
+        minimum_score -= (
+            minimum_score * random.random()
+        )  # THIS might be a big source of variation in evolution
         for g, res in self.gen_results.items():
             if score(res) > minimum_score:
                 return g.snake
@@ -101,14 +103,12 @@ class Population:
         game.snake.brain = snake.brain.clone()
         return game
 
-    def save_genes(self):
-        # save last and best 
-        # use date as tag
-        pass
-
 
 def score(res):
-    return res[0]*10 + res[1]/100
+    return res[0] * 10 + res[1] / 100
+
+
+# ----------------------- Test ---------------------------
 
 
 def test_population():
@@ -121,6 +121,7 @@ def test_population():
 
     p = Population(population_size, world_size, brain_type)
 
+    res = []
     for gen in range(generation):
         p.live()
         p.evaluate_gen()
@@ -128,13 +129,59 @@ def test_population():
 
         if (gen % 10) == 0:
             print(f"Gen #{gen}:", p.best_res, p.best_score)
-
+            res += [(*p.best_res, p.best_score)]
 
     print(f"Overall Results #{p.best_gen}:", p.best_overall_res, p.best_overall_score)
-    p.save_genes()
+
+    res += [(*p.best_overall_res, p.best_overall_score)]
+    return res
+
+
+# ----------------------- Database ---------------------------
+
+
+def access_db(db_name):
+    return db.get_connection(db_name)
+
+
+def populate_db(db_connection, list):
+    db.create_table(db_connection)
+
+    # convert list elements to tuple
+    rows = [tuple(elm) for elm in list]
+
+    db.insert_rows(db_connection, rows)
+
+
+def load_db(db_connection):
+    rows = db.get_all(db_connection)
+    db.print_table(rows)
+
+    snake = []
+    for row in rows:
+        snake += [row["size"], row["age"], row["score"]]
+
+    return snake
+
+
+def test_write_and_read_db():
+    db_name = "database/snake.db"
+    snake_db = access_db(db_name)
+
+    # create
+    scores = test_population()
+    populate_db(snake_db, scores)
+    snake_db.close()
+
+    # access
+    snake_db = access_db(db_name)
+    rows = load_db(snake_db)
+    snake_db.close()
+
 
 def main():
-    test_population()
+    # test_population()
+    test_write_and_read_db()
 
 
 if __name__ == "__main__":

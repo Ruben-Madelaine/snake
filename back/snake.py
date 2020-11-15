@@ -87,7 +87,7 @@ class RandomAI:
 
 class AI:
     def __init__(self, nn=None):
-        self.vision = VISION
+        self.vision = VISION_DIAG
 
         if not nn:
             inputs = len(self.vision) * 3  # amount of cell visible * data accessible
@@ -154,6 +154,7 @@ class AI:
     def crossover(self, parent):
         nn = self.nn.crossover(parent.nn)
         return AI(nn)
+
 
 def add_pos(pos1, pos2):
     return tuple(p1 + p2 for p1, p2 in zip(pos1, pos2))

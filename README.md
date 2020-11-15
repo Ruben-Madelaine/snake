@@ -34,6 +34,7 @@ First expected release the friday **15th november 2020**
     ``` bash
     apt install python3-pip
     pip install numpy
+    pip install PTable
     ```
 
 ## :clipboard: Tasks
