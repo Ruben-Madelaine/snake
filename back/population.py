@@ -1,3 +1,9 @@
+
+import random
+
+import snake
+from game import Game
+
 try:
     from game import Game
     from snake import RandomAI
@@ -8,75 +14,124 @@ except ModuleNotFoundError:
 
 class Population:
     def __init__(self, size, game_size, brain_type):
+        self.best_overall_score = 0
+        self.gen = 0
+
         self.size = size
         self.game_size = game_size
         self.brain_type = brain_type
+        self.mutation_rate = 0.2
         self.start()
 
     def start(self):
-        self.population = [Game(self.game_size) for _ in range(self.size)]
-        for game in self.population:
-            game.start(self.brain_type)
+        self.population = [self.init_game() for _ in range(self.size)]
+
+    def init_game(self):
+        game = Game(self.game_size)
+        game.start(self.brain_type)
+        return game
 
     def live(self):
         for game in self.population:
             game.play()
 
-    def get_gen_results(self):
+    def evaluate_gen(self):
         gen_results = {}
         for game in self.population:
             snake_size = game.snake.size
             snake_age = game.count
             gen_results[game] = (snake_size, snake_age)
 
-        return gen_results
+        self.gen_results = gen_results
 
-    def get_sorted_gen_results(self):
-        results = self.get_gen_results()
-        sorted_res = sorted(results.values(), reverse=True)
-        return sorted_res
+        sorted_res = sorted(self.gen_results.values(), reverse=True)
 
-    def get_best(self):
-        results = self.get_gen_results()
-        best_res = sorted(results.values(), reverse=True)[0]
-        best = [g for g, res in results.items() if res == best_res]
-        return best[0]
+        best_res = sorted_res[0]
+        bests = [g for g, res in self.gen_results.items() if res == best_res]
 
-    def nex_gen(self):
-        best_snake = self.get_best().snake
+        self.best_res = best_res
+        self.best_game = bests[0]
+        self.best_score = score(best_res)
+        self.best_snake = bests[0].snake
+        self.update_overall_stats()
 
-        new_population = []
-        for _ in range(self.size):
-            game = Game(self.game_size)
-            game.start(self.brain_type)
+    def update_overall_stats(self):
+        if self.best_score > self.best_overall_score:
+            self.best_overall_res = self.best_res
+            self.best_overall_game = self.best_game
+            self.best_overall_score = self.best_score
+            self.best_overall_snake = self.best_snake
+            self.best_gen = self.gen
 
-            game.snake.brain = best_snake.brain.clone()
-            new_population += [game]
+    def natural_selection(self):
+        self.evaluate_gen()
 
-            # TODO improve !!!!
+        new_gen = [self.clone(self.best_snake)] # Best snake makes it to next gen
 
-        self.population = new_population
+        for i in range(1, self.size):
+            mother = self.get_a_parent()
+            father = self.get_a_parent()
+
+            game = self.crossover(mother, father)
+            new_gen += [game]
+
+        self.population = new_gen
+        self.gen += 1
+
+    def get_a_parent(self):
+        #   get a parent from last gen
+        #       best / with fitness > (rand?) threshold / randomly ?
+        minimum_score = self.best_score
+        minimum_score -= minimum_score*random.random() # THIS might be a big source of variation in evolution 
+        for g, res in self.gen_results.items():
+            if score(res) > minimum_score:
+                return g.snake
+
+        return self.best_snake
+
+    def crossover(self, mother, father):
+        game = self.init_game()
+
+        game.snake.brain = mother.brain.crossover(father.brain)
+        game.snake.brain.mutate(self.mutation_rate)
+        return game
+
+    def clone(self, snake):
+        game = self.init_game()
+        game.snake.brain = snake.brain.clone()
+        return game
+
+    def save_genes(self):
+        # save last and best 
+        # use date as tag
+        pass
+
+
+def score(res):
+    return res[0]*10 + res[1]/100
 
 
 def test_population():
-    generation = 10
-    population = 10
+    generation = 500
+    population_size = 10
     world_size = 10
-    brain_type = RandomAI
-    # test another brain
 
-    p = Population(population, world_size, brain_type)
+    # brain_type = snake.RandomAI
+    brain_type = snake.AI
 
-    gen_best_scores = []
+    p = Population(population_size, world_size, brain_type)
+
     for gen in range(generation):
         p.live()
-        best = p.get_sorted_gen_results()
-        gen_best_scores += [best]
-        p.nex_gen()
+        p.evaluate_gen()
+        p.natural_selection()
 
-    for i, b in enumerate(gen_best_scores):
-        print(f"Gen #{i}:", b)
+        if (gen % 10) == 0:
+            print(f"Gen #{gen}:", p.best_res, p.best_score)
 
+
+    print(f"Overall Results #{p.best_gen}:", p.best_overall_res, p.best_overall_score)
+    p.save_genes()
 
 def main():
     test_population()

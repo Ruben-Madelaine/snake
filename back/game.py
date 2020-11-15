@@ -1,5 +1,6 @@
 import snake
 from board import Board
+
 try:
     import snake
     from board import Board
@@ -8,13 +9,14 @@ except ModuleNotFoundError:
     from back.board import Board
 
 
-MAX_ITER = 100
+STARVING_THRESHOLD = 100
 
 
 class Game:
     def __init__(self, size):
         self.board = Board(size)
         self.count = 0
+        self.starving = 0
 
     def __str__(self):
         return str(self.board)
@@ -40,7 +42,7 @@ class Game:
         self.snake = snake.Snake(brain(), body, snake.DIRECTIONS[snake.RIGHT])
 
     def play(self):
-        while self.snake.is_alive() and self.count < MAX_ITER:
+        while self.snake.is_alive() and self.starving < STARVING_THRESHOLD:
             self.next()
         # logger(
         #     f"> Our fellow Snake friend died at the age of {self.count}. What a pitty..."
@@ -63,6 +65,7 @@ class Game:
 
     def next(self):
         self.count += 1
+        self.starving += 1
 
         self.snake.think(self.board.grid)
         next_pos = self.snake.next_pos()
@@ -70,6 +73,7 @@ class Game:
         if cell:
             ate_a_fruit = self.snake.move(cell)
             if ate_a_fruit:
+                self.starving = 0
                 self.fruit = self.board.drop_fruit()
                 logger("Air dropping a new fruit in 3...2..1.. *BOOM*")
 
@@ -108,6 +112,7 @@ def test_game():
     state = g.get_state()
     print(state)
 
+
 def test_ai():
     g = Game(10)
     g.start(snake.AI)
@@ -115,6 +120,7 @@ def test_ai():
 
     g.play()
     print(g)
+
 
 def main():
     # test_game()

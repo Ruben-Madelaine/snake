@@ -14,8 +14,8 @@ RIGHT = "RIGHT"
 
 DIRECTIONS = {UP: (-1, 0), DOWN: (1, 0), LEFT: (0, -1), RIGHT: (0, 1)}
 
-VISION = [(0,1), (0,-1), (1,0), (-1,0)]
-VISION_DIAG = [(0,1), (0,-1), (1,0), (-1,0), (1,1), (-1,-1), (-1,1), (1,-1)]
+VISION = [(0, 1), (0, -1), (1, 0), (-1, 0)]
+VISION_DIAG = [(0, 1), (0, -1), (1, 0), (-1, 0), (1, 1), (-1, -1), (-1, 1), (1, -1)]
 
 
 class Snake:
@@ -55,7 +55,6 @@ class Snake:
     def next_pos(self):
         return add_pos(self.body[0].pos, self.direction)
 
-
     def change_dir(self, dir):
         if dir and dir != tuple(p * (-1) for p in self.direction):
             self.direction = dir
@@ -87,15 +86,18 @@ class RandomAI:
 
 
 class AI:
-    def __init__(self):
+    def __init__(self, nn=None):
         self.vision = VISION
 
-        inputs = len(self.vision)
-        choices = len(DIRECTIONS)
-        neurones = 4
-        layers = 2
-        self.nn = network.Network(inputs, neurones, choices, layers)
-    
+        if not nn:
+            inputs = len(self.vision) * 3  # amount of cell visible * data accessible
+            choices = len(DIRECTIONS)
+            neurones = 4
+            layers = 2
+            self.nn = network.Network(inputs, neurones, choices, layers)
+        else:
+            self.nn = nn
+
     def think(self, body, surroundings):
         head = body[0]
         neighbors = self.get_neighbors(head, surroundings)
@@ -118,11 +120,8 @@ class AI:
     def analyse(self, neighbors):
         # feed neighbors trough the NN
         data = self.gather_data(neighbors)
-        print(data)
         res = self.nn.analyse(data)
-        print(res)
-        # and get the resultiong analysis
-        conclusions = {d:r for d,r in zip(DIRECTIONS, res)}
+        conclusions = {d: r for d, r in zip(DIRECTIONS, res)}
         return conclusions
 
     def gather_data(self, neighbors):
@@ -134,7 +133,7 @@ class AI:
     def propose_new_direction(self, conclusions):
         # based on results, process it to define new dir
         best_option = self.best_option(conclusions)
-        print(best_option)
+        logger(best_option)
         return DIRECTIONS[best_option]
 
     def best_option(self, thoughts):
@@ -142,14 +141,24 @@ class AI:
             return item[1]
 
         best = max(thoughts.values())
-        choices = [c for c,v in thoughts.items() if v == best]
+        choices = [c for c, v in thoughts.items() if v == best]
         return choices[0]
 
+    def clone(self):
+        nn = self.nn.clone()
+        return AI(nn)
+
+    def mutate(self, mutation_rate):
+        self.nn.mutate(mutation_rate)
+
+    def crossover(self, parent):
+        nn = self.nn.crossover(parent.nn)
+        return AI(nn)
 
 def add_pos(pos1, pos2):
     return tuple(p1 + p2 for p1, p2 in zip(pos1, pos2))
 
-        
+
 def logger(txt):
-    # if __name__ == "__main__":
-    print(txt)
+    if __name__ == "__main__":
+        print(txt)

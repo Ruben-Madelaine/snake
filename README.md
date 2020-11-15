@@ -70,7 +70,8 @@ First expected release the friday **15th november 2020**
     - [ ] Use a librairy (Pytorch or Tensorflow)
     - [ ] Save Neural Network configuration and load it 
     - [ ] Show statistics
-    - [ ] Train on short 
+    - [ ] Train to win in short periods
+    - [ ] Use Pytorch
  
 1. Population
     - [x] Load population
