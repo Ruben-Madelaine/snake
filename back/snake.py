@@ -16,17 +16,38 @@ DIRECTIONS = {UP: (-1, 0), DOWN: (1, 0), LEFT: (0, -1), RIGHT: (0, 1)}
 
 VISION = [(0, 1), (0, -1), (1, 0), (-1, 0)]
 val = 1
-VISION_DIAG = [(x, y) for x in range(-val, val+1) for y in range(-val, val+1) if not (x == y == 0)]
+VISION_DIAG = [
+    (x, y)
+    for x in range(-val, val + 1)
+    for y in range(-val, val + 1)
+    if not (x == y == 0)
+]
 
 val = 2
-VISION_2_BLOCKS = [(x, y) for x in range(-val, val+1) for y in range(-val, val+1) if not (x == y == 0)]
+VISION_2_BLOCKS = [
+    (x, y)
+    for x in range(-val, val + 1)
+    for y in range(-val, val + 1)
+    if not (x == y == 0)
+]
 
 val = 1
 cross_size = 10
-VISION_CROSS = sum([[(dir, c), (c, dir)] for c in range(cross_size) for dir in range(-val, val+1) if not (c == dir == 0)], [])
+VISION_CROSS = sum(
+    [
+        [(dir, c), (c, dir)]
+        for c in range(cross_size)
+        for dir in range(-val, val + 1)
+        if not (c == dir == 0)
+    ],
+    [],
+)
 
-VISION_GRAND_DIAG = sum([[(c, c), (-c, -c), (c, -c), (-c, c)] for c in range(cross_size) if c != 0], [])
+VISION_GRAND_DIAG = sum(
+    [[(c, c), (-c, -c), (c, -c), (-c, c)] for c in range(cross_size) if c != 0], []
+)
 VISION_360 = VISION_CROSS + VISION_GRAND_DIAG
+
 
 class Snake:
     def __init__(self, brain, body, direction):

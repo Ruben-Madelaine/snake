@@ -31,10 +31,14 @@ class Network:
 
     def get_infos(self):
         infos = [
-            self.input_nodes, self.hidden_nodes, 
-            self.output_nodes, self.hidden_layers
+            self.input_nodes,
+            self.hidden_nodes,
+            self.output_nodes,
+            self.hidden_layers,
         ]
-        weights = "\n".join([f"{w.nb_row}, {w.nb_col}: {w.to_array()}" for w in self.weights])
+        weights = "\n".join(
+            [f"{w.nb_row}, {w.nb_col}: {w.to_array()}" for w in self.weights]
+        )
 
         return *infos, weights
 

@@ -15,8 +15,8 @@ STARVING_THRESHOLD = 200
 
 
 import os
-clear = lambda: os.system('clear')
 
+clear = lambda: os.system("clear")
 
 
 class Game:
@@ -53,9 +53,8 @@ class Game:
             self.next()
             if verbose:
                 print(self)
-                time.sleep(.1)
+                time.sleep(0.1)
                 clear()
-
 
         if verbose:
             print(

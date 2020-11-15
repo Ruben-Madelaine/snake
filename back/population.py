@@ -115,12 +115,14 @@ def score(res):
 
 # ----------------------- Tests ---------------------------
 
+
 def test_population(generation, population_size, world_size):
     # brain_type = snake.RandomAI
     brain_type = snake.AI
 
     p = Population(population_size, world_size, brain_type)
     return run_generations(p, generation)
+
 
 def run_generations(p, generation):
     stats = []
@@ -141,7 +143,9 @@ def run_generations(p, generation):
             print(f"Gen #{gen}:", p.best_res, p.best_score)
             print("Total Batch time:", total_batch, "\tTotal time:", total)
             stats += [(*p.best_res, p.best_score)]
-            networks += [(p.best_score, gen, total, *p.best_game.snake.brain.nn.get_infos())]
+            networks += [
+                (p.best_score, gen, total, *p.best_game.snake.brain.nn.get_infos())
+            ]
             t0_batch = time.time()
 
     print(f"Overall Results #{p.best_gen}:", p.best_overall_res, p.best_overall_score)
@@ -161,7 +165,7 @@ def populate_db(db_connection, list):
     db.create_table(db_connection)
 
     # convert list elements to tuple
-    details = "AI, 360 vision, Best Net, New score mode" # Best Net Trained
+    details = "AI, 360 vision, Best Net, New score mode"  # Best Net Trained
     rows = [tuple([*elm, details]) for elm in list]
 
     db.insert_rows(db_connection, rows)
@@ -183,7 +187,9 @@ def save_score(db_name, scores):
     rows = load_db(snake_db)
     snake_db.close()
 
+
 # ----------------------- Network
+
 
 def populate_networks_db(db_connection, list):
     db.create_networks_table(db_connection)
@@ -207,35 +213,36 @@ def load_network_db(db_connection, get_network):
 
 
 def load_network(config):
-    score = config['score']
+    score = config["score"]
     print("Best score =", score)
 
-    input_nodes = config['input_nodes']
-    hidden_nodes = config['hidden_nodes']
-    output_nodes = config['output_nodes']
-    hidden_layers = config['hidden_layers']
-    wheights_info = config['wheights_info']
+    input_nodes = config["input_nodes"]
+    hidden_nodes = config["hidden_nodes"]
+    output_nodes = config["output_nodes"]
+    hidden_layers = config["hidden_layers"]
+    wheights_info = config["wheights_info"]
 
     nn = network.Network(input_nodes, hidden_nodes, output_nodes, hidden_layers)
     weights = []
     weights_conf = wheights_info.split("\n")
     for conf in weights_conf:
         matrix_conf, raw_wheights = conf.split(":")
-        row, col = [int(i) for i in matrix_conf.split(',')]
+        row, col = [int(i) for i in matrix_conf.split(",")]
         w = matrix.Matrix(row, col)
-        raw_wheights = raw_wheights.replace('[', '').replace(']', '').split(',')
+        raw_wheights = raw_wheights.replace("[", "").replace("]", "").split(",")
 
         m = {}
         i = 0
         for r in range(row):
             for c in range(col):
-                m[(r,c)] = float(raw_wheights[i])
+                m[(r, c)] = float(raw_wheights[i])
                 i += 1
         w.matrix = m
         weights += [w]
 
     nn.weights = weights
     return nn
+
 
 def train_new_ai(generation, population_size, world_size):
     db_name = "database/snake.db"
@@ -273,7 +280,7 @@ def play_one_game_with_best_ai(get_network):
     g.snake.brain.nn = best_network
     g.play(verbose=True)
     print(g)
-    
+
 
 def load_best_ai_and_train(generation, population_size, world_size, get_network):
     db_name = "database/snake.db"
@@ -283,7 +290,6 @@ def load_best_ai_and_train(generation, population_size, world_size, get_network)
     best_network = load_network_db(snake_db, get_network)
     snake_db.close()
 
-
     # brain_type = snake.RandomAI
     brain_type = snake.AI
 
@@ -291,7 +297,7 @@ def load_best_ai_and_train(generation, population_size, world_size, get_network)
 
     for g in p.population:
         g.snake.brain.nn = best_network.clone()
-    
+
     scores, networks = run_generations(p, generation)
 
     save_score(db_name, scores)
